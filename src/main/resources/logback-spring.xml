@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="port" source="server.port"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <providers>
+                <timestamp/>
+                <version/>
+                <logLevel/>
+                <loggerName/>
+                <pattern>
+                    <pattern>
+                        {
+                        "http_method": "%X{http_method}",
+                        "request_url": "%X{request_url}",
+                        "request_headers": "%X{request_headers}",
+                        "request_body": "%X{request_body}",
+                        "http_status": "%X{http_status}",
+                        "response_headers": "%X{response_headers}",
+                        "response_body": "%X{response_body}",
+                        "level": "%level",
+                        "logger": "%logger",
+                        "thread": "%thread",
+                        "message": "%message"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <appender name="CLOUDWATCH" class="ca.pjer.logback.AwsLogsAppender">
+        <!-- AWS 자격 증명과 설정 -->
+        <accessKey>${AWS_ACCESS_KEY_ID}</accessKey>
+        <secretKey>${AWS_SECRET_ACCESS_KEY}</secretKey>
+        <region>${AWS_REGION}</region>
+        <logGroupName>your-log-group</logGroupName>
+        <logStreamName>your-log-stream</logStreamName>
+        <maxBatchLogEvents>50</maxBatchLogEvents>
+        <maxFlushTimeMillis>5000</maxFlushTimeMillis> <!-- 비동기 전송을 위해 설정 -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <providers>
+                <timestamp/>
+                <version/>
+                <logLevel/>
+                <loggerName/>
+                <pattern>
+                    <pattern>
+                        {
+                        "http_method": "%X{http_method}",
+                        "request_url": "%X{request_url}",
+                        "request_headers": "%X{request_headers}",
+                        "request_body": "%X{request_body}",
+                        "http_status": "%X{http_status}",
+                        "response_headers": "%X{response_headers}",
+                        "response_body": "%X{response_body}",
+                        "level": "%level",
+                        "logger": "%logger",
+                        "thread": "%thread",
+                        "message": "%message"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="CLOUDWATCH" />
+    </root>
+
+</configuration>
